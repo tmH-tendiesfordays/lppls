@@ -1,0 +1,25 @@
+# Python Standard
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.venv/
+env/
+.env
+
+# Distribution / Build
+build/
+dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# Generated Plots (Optional - comment out if you want to track them)
+# *.png
+
+# Logs and temporary
+*.log
