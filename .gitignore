@@ -23,3 +23,6 @@ dist/
 
 # Logs and temporary
 *.log
+
+# Manual output plots
+manual_plots/

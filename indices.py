@@ -115,7 +115,9 @@ def run_analysis():
             
             plt.close('all')
             lppls_model.plot_confidence_indicators(res)
-            plt.title(f"Confidence: {ticker} ({today_str})")
+            # IMPROVEMENT: Add Title using suptitle for shared title across subplots
+            plt.suptitle(f"Confidence Indicators: {ticker} ({START_DATE} to {today_str})")
+            # plt.title(f"Confidence: {ticker} ({today_str})") # Removed simple title in favor of suptitle
             conf_filename = os.path.join(OUTPUT_DIR, f"{safe_ticker}_{today_str}_confidence.png")
             plt.savefig(conf_filename)
             print(f"Saved {conf_filename}")
