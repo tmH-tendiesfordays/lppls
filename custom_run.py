@@ -14,9 +14,9 @@ from datetime import datetime
 # ==========================================
 # USER CONFIGURATION
 # ==========================================
-TICKER = "NVDA"   # Try Bitcoin, SPY, QQQ, NVDA, etc.
-START_DATE = "2010-01-01"
-END_DATE = "2026-01-01" # Near the 2021 peak of Bitcoin
+TICKER = "NDX"   # Try Bitcoin, SPY, QQQ, NVDA, etc.
+START_DATE = "1995-01-01"
+END_DATE = "2026-01-31" # Near the 2021 peak of Bitcoin
 # ==========================================
 
 # ==========================================

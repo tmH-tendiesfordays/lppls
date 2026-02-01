@@ -1,0 +1,9 @@
+cma
+matplotlib
+numba
+numpy
+pandas
+scipy
+tqdm
+xarray
+scikit-learn
