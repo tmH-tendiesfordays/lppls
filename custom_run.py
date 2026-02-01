@@ -14,7 +14,7 @@ from datetime import datetime
 # ==========================================
 # USER CONFIGURATION
 # ==========================================
-TICKER = "NDX"   # Try Bitcoin, SPY, QQQ, NVDA, etc.
+TICKER = "^NDX"   # Try Bitcoin, SPY, QQQ, NVDA, etc.
 START_DATE = "1995-01-01"
 END_DATE = "2026-01-31" # Near the 2021 peak of Bitcoin
 # ==========================================
@@ -28,6 +28,8 @@ if __name__ == '__main__':
     if len(data) == 0:
         print("Error: No data found. Please check ticker and dates.")
         exit()
+    
+    print(f"Downloaded Data Range: {data.index[0]} to {data.index[-1]}")
 
     # Flatten columns if multi-index (common in newer yfinance)
     if isinstance(data.columns, pd.MultiIndex):
