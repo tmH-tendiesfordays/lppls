@@ -15,8 +15,8 @@ import os
 # ==========================================
 # USER CONFIGURATION
 # ==========================================
-TICKERS = ["^NDX", "SPY"]   # List of tickers to analyze
-START_DATE = "2025-01-01"
+TICKERS = ["SLV", "GLD"]   # List of tickers to analyze - ["^NDX", "SPY", "^GSPC", "QQQ", "BTC-USD"]
+START_DATE = "2020-01-01"
 # Use current date as End Date
 END_DATE = datetime.now().strftime('%Y-%m-%d')
 OUTPUT_DIR = "manual_plots" # Sub-folder for results
@@ -115,6 +115,10 @@ if __name__ == '__main__':
             # IMPROVEMENT: Better Date Axis for Confidence Plot (Subplots)
             fig = plt.gcf()
             for ax in fig.axes:
+                 # Skip if axis is off (e.g. tables)
+                if not ax.axison:
+                    continue
+                
                  # Only modify x-axis for bottom plots or all sharex
                 ax.xaxis.set_major_locator(mdates.AutoDateLocator())
                 ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(ax.xaxis.get_major_locator()))
@@ -126,6 +130,9 @@ if __name__ == '__main__':
             
             plt.savefig(conf_filename)
             print(f"Saved confidence plot to {conf_filename}")
+
+            csv_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{run_timestamp}_confidence.csv')
+            lppls_model.save_confidence_csv(res, csv_filename)
 
             print(f"Projected Critical Time (tc): {tc}")
             try:

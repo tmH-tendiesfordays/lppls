@@ -363,6 +363,43 @@ class LPPLS(object):
         return res_df
         # return ts, price, pos_lst, neg_lst, pos_conf_lst, neg_conf_lst, #tc_lst, m_lst, w_lst, O_lst, D_lst
 
+    def save_confidence_csv(self, res, filepath):
+        """
+        Saves confidence indicators to a CSV file.
+        Columns: Date, Value, Type (pos/neg)
+        """
+        res_df = self.compute_indicators(res)
+        
+        data = []
+        
+        # Process Positive
+        for _, row in res_df[res_df["pos_conf"] > 0].iterrows():
+            date_str = pd.Timestamp.fromordinal(int(row["time"])).strftime('%Y-%m-%d')
+            data.append({
+                "Date": date_str,
+                "Value": row["pos_conf"],
+                "Type": "Top"
+            })
+            
+        # Process Negative
+        for _, row in res_df[res_df["neg_conf"] > 0].iterrows():
+            date_str = pd.Timestamp.fromordinal(int(row["time"])).strftime('%Y-%m-%d')
+            data.append({
+                "Date": date_str,
+                "Value": row["neg_conf"],
+                "Type": "Bottom"
+            })
+            
+        # Create DF and save
+        if data:
+            df = pd.DataFrame(data)
+            # Sort by Date
+            df = df.sort_values("Date")
+            df.to_csv(filepath, index=False)
+            print(f"Saved confidence CSV to {filepath}")
+        else:
+            print(f"No confidence signals to save for {filepath}")
+
     def plot_confidence_indicators(self, res):
         """
         Args:

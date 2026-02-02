@@ -52,8 +52,13 @@ def cleanup_old_files(directory, keep_count):
     dates_to_delete = unique_dates[:-keep_count]
     print(f"Deleting files from dates: {dates_to_delete}")
     
-    files = glob.glob(os.path.join(directory, "*.png"))
-    for f in files:
+    # Check for both png and csv
+    types = ('*.png', '*.csv')
+    files_grabbed = []
+    for files in types:
+        files_grabbed.extend(glob.glob(os.path.join(directory, files)))
+        
+    for f in files_grabbed:
         for d in dates_to_delete:
             if d in f:
                 try:
@@ -121,6 +126,9 @@ def run_analysis():
             conf_filename = os.path.join(OUTPUT_DIR, f"{safe_ticker}_{today_str}_confidence.png")
             plt.savefig(conf_filename)
             print(f"Saved {conf_filename}")
+
+            csv_filename = os.path.join(OUTPUT_DIR, f"{safe_ticker}_{today_str}_confidence.csv")
+            lppls_model.save_confidence_csv(res, csv_filename)
             
         except Exception as e:
             print(f"Failed to process {ticker}: {e}")
