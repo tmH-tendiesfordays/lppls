@@ -17,8 +17,8 @@ import os
 # ==========================================
 # USER CONFIGURATION
 # ==========================================
-TICKERS = ["^GSPC"]   # List of tickers to analyze - ["^NDX", "SPY", "^GSPC", "QQQ", "BTC-USD"]
-START_DATE = "2003-01-01"
+TICKERS = ["^NDX", "SPY"]   # List of tickers to analyze - ["^NDX", "SPY", "^GSPC", "QQQ", "BTC-USD"]
+START_DATE = "2020-01-01"
 # Use current date as End Date
 END_DATE = datetime.now().strftime('%Y-%m-%d')
 OUTPUT_DIR = "manual_plots" # Sub-folder for results
@@ -450,8 +450,13 @@ A detailed log of the signal clusters shown above, sorted by **Recency**.
                     f"LPPLS Analyst Report: {TICKER}\n"
                     f"Run Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
                     f"Data Range: {START_DATE} to {END_DATE}\n\n"
-                    f"Projected Critical Time (tc): {tc_str}\n\n"
-                    f"{summary_text.replace('### Executive Summary', 'EXECUTIVE SUMMARY').replace('**', '')}"
+                    f"1. MODEL FIT & CRITICAL TIME (tc): {tc_str}\n"
+                    f"{tc_commentary.replace('**', '')}\n\n"
+                    f"2. CONFIDENCE INDICATORS\n"
+                    f"{conf_commentary.replace('**', '')}\n\n"
+                    f"3. CUMULATIVE PRICE & SIGNAL ANALYSIS\n"
+                    f"{recent_commentary.replace('**', '')}\n\n"
+                    f"{summary_text.replace('### Executive Summary', '4. EXECUTIVE SUMMARY').replace('**', '')}"
                 )
                 
                 # Simple text wrapping for the summary
