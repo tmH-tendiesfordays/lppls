@@ -154,3 +154,20 @@ The generated **PDF Report** includes **Dynamic Observations**:
 *   **Trend Analysis**: "Observation: The last 3 detected clusters were all 'Top' signals..."
 
 This allows you to quickly gauge the state of the asset without manually interpreting every raw data point.
+
+---
+
+## 5. Theory: Critical Time ($t_c$) & Timeframes
+
+### Why is the "Critical Time" sometimes in the past?
+The **Critical Time ($t_c$)** represents the mathematical climax of the super-exponential curve.
+*   **Future $t_c$**: The bubble is still growing and has not reached its limit.
+*   **Past $t_c$**: The model detects that the curve has *already peaked*. This often implies the regime change (crash or correction) has already begun or the pressure has diffused.
+
+### Should I "tighten the timeframe" to force a future prediction?
+**Short Answer:** No.
+
+**Detailed Explanation:**
+1.  **Shape Dominance**: $t_c$ is determined by the curvature of price. "Zooming in" on a flattening trend will only confirm the trend has flattened, likely reinforcing the "Past" signal.
+2.  **Fit Stability**: The model fits 7 complex parameters. Reducing the data points (e.g., shortening window sizes) forces the model to fit noise rather than signal. This leads to **overfitting**—the model will have low error but zero predictive power.
+3.  **Confidence Risk**: The Confidence Indicators rely on **Consensus** across long and short windows. Removing the long windows by tightening the timeframe removes the "Long-Term Memory" of the model, destroying the validity of the consensus.
