@@ -347,8 +347,6 @@ The **LPPLS (Log-Periodic Power Law Singularity)** model fits a super-exponentia
 - **Price (Blue)**: Actual market data.
 - **Divergence**: If the Price is currently far below the Fit Line, the bubble may have already popped or valid parameters were not found. If Price is hugging the Orange line tightly parabolic, the trend is robust.
 
-- **Divergence**: If the Price is currently far below the Fit Line, the bubble may have already popped or valid parameters were not found. If Price is hugging the Orange line tightly parabolic, the trend is robust.
-
 ![Fit](../images/{os.path.basename(fit_filename)})
 
 ---
@@ -362,8 +360,6 @@ Calculating $t_c$ on a single window can be noisy. This section performs **neste
 
 ### Analysis
 High values (close to 1.0) indicate a **consensus** across different timeframes that a specific date was a critical point. Frequent clustering of these spikes suggests a high probability of a turning point.
-
-{conf_commentary}
 
 {conf_commentary}
 
@@ -383,8 +379,6 @@ Observe the clusters. A solitary spike might be noise, but a **dense cluster** o
 
 {recent_commentary}
 
-{recent_commentary}
-
 ![Cumulative](../images/{os.path.basename(cum_filename)})
 
 ---
@@ -394,8 +388,6 @@ Observe the clusters. A solitary spike might be noise, but a **dense cluster** o
 ### What is this?
 A detailed log of the signal clusters shown above, sorted by **Recency**.
 - **Date Range**: The duration where the signal persisted.
-- **Max Confidence**: The peak intensity (0.0 to 1.0).
-
 - **Max Confidence**: The peak intensity (0.0 to 1.0).
 
 ![Table](../images/{os.path.basename(table_filename) if table_filename else 'No Signals'})
