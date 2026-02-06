@@ -31,8 +31,17 @@ def ensure_dir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-def get_unique_dates_from_files(directory):
-    files = glob.glob(os.path.join(directory, "*.png"))
+def cleanup_ticker_dir(ticker_dir, keep_count):
+    images_dir = os.path.join(ticker_dir, "images")
+    reports_dir = os.path.join(ticker_dir, "reports")
+    
+    if not os.path.exists(images_dir):
+        return
+
+    print(f"Cleaning up old files in {ticker_dir}...")
+    
+    # Get unique dates from images
+    files = glob.glob(os.path.join(images_dir, "*.png"))
     dates = set()
     date_pattern = re.compile(r'\d{4}-\d{2}-\d{2}')
     
@@ -41,11 +50,8 @@ def get_unique_dates_from_files(directory):
         match = date_pattern.search(basename)
         if match:
             dates.add(match.group(0))
-    return sorted(list(dates))
-
-def cleanup_old_files(directory, keep_count):
-    print(f"Cleaning up old files in {directory}...")
-    unique_dates = get_unique_dates_from_files(directory)
+            
+    unique_dates = sorted(list(dates))
     
     if len(unique_dates) <= keep_count:
         print("No files to delete.")
@@ -55,20 +61,26 @@ def cleanup_old_files(directory, keep_count):
     dates_to_delete = unique_dates[:-keep_count]
     print(f"Deleting files from dates: {dates_to_delete}")
     
-    # Check for png, csv, md, pdf
+    # Delete from images and reports
+    dirs_to_clean = [images_dir, reports_dir]
     types = ('*.png', '*.csv', '*.md', '*.pdf')
-    files_grabbed = []
-    for files in types:
-        files_grabbed.extend(glob.glob(os.path.join(directory, files)))
-        
-    for f in files_grabbed:
-        for d in dates_to_delete:
-            if d in f:
-                try:
-                    os.remove(f)
-                    print(f"Deleted {f}")
-                except OSError as e:
-                    print(f"Error deleting {f}: {e}")
+    
+    for d_path in dirs_to_clean:
+        if not os.path.exists(d_path):
+            continue
+            
+        files_grabbed = []
+        for t in types:
+            files_grabbed.extend(glob.glob(os.path.join(d_path, t)))
+            
+        for f in files_grabbed:
+            for d in dates_to_delete:
+                if d in f:
+                    try:
+                        os.remove(f)
+                        print(f"Deleted {f}")
+                    except OSError as e:
+                        print(f"Error deleting {f}: {e}")
 
 def cluster_signals(df, col_name, signal_type):
     clusters = []
@@ -101,6 +113,19 @@ def run_analysis():
     
     for ticker in TICKERS:
         print(f"--- Processing {ticker} ---")
+        
+        safe_ticker = ticker.replace('^', '') # Remove caret for filename
+        
+        # Create subfolders for this ticker
+        ticker_dir = os.path.join(OUTPUT_DIR, safe_ticker)
+        images_dir = os.path.join(ticker_dir, "images")
+        reports_dir = os.path.join(ticker_dir, "reports")
+
+        if not os.path.exists(images_dir):
+            os.makedirs(images_dir)
+        if not os.path.exists(reports_dir):
+            os.makedirs(reports_dir)
+
         try:
             # Fetch Data
             data = yf.download(ticker, start=START_DATE, end=end_date)
@@ -127,8 +152,8 @@ def run_analysis():
             plt.close('all') # Clear previous figures
             lppls_model.plot_fit()
             plt.title(f"LPPLS Fit: {ticker} ({today_str})")
-            safe_ticker = ticker.replace('^', '') # Remove caret for filename
-            fit_filename = os.path.join(OUTPUT_DIR, f"{safe_ticker}_{today_str}_fit.png")
+            # safe_ticker defined earlier
+            fit_filename = os.path.join(images_dir, f"{safe_ticker}_{today_str}_fit.png")
             plt.savefig(fit_filename)
             print(f"Saved {fit_filename}")
             
@@ -148,11 +173,11 @@ def run_analysis():
             # IMPROVEMENT: Add Title using suptitle for shared title across subplots
             plt.suptitle(f"Confidence Indicators: {ticker} ({START_DATE} to {today_str})")
             # plt.title(f"Confidence: {ticker} ({today_str})") # Removed simple title in favor of suptitle
-            conf_filename = os.path.join(OUTPUT_DIR, f"{safe_ticker}_{today_str}_confidence.png")
+            conf_filename = os.path.join(images_dir, f"{safe_ticker}_{today_str}_confidence.png")
             plt.savefig(conf_filename)
             print(f"Saved {conf_filename}")
 
-            csv_filename = os.path.join(OUTPUT_DIR, f"{safe_ticker}_{today_str}_confidence.csv")
+            csv_filename = os.path.join(reports_dir, f"{safe_ticker}_{today_str}_confidence.csv")
             lppls_model.save_confidence_csv(res, csv_filename)
             
             # ==========================================
@@ -198,7 +223,7 @@ def run_analysis():
             ax1.xaxis.set_major_formatter(mdates.ConciseDateFormatter(ax1.xaxis.get_major_locator()))
             ax1.xaxis.set_minor_locator(mdates.WeekdayLocator(interval=1))
             
-            cum_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{today_str}_cumulative.png')
+            cum_filename = os.path.join(images_dir, f'{safe_ticker}_{today_str}_cumulative.png')
             plt.savefig(cum_filename, bbox_inches='tight')
             plt.close(fig)
             print(f"Saved {cum_filename}")
@@ -228,7 +253,7 @@ def run_analysis():
                         cell.set_text_props(weight='bold')
                         cell.set_facecolor('#f0f0f0')
                 
-                table_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{today_str}_cumulative_table.png')
+                table_filename = os.path.join(images_dir, f'{safe_ticker}_{today_str}_cumulative_table.png')
                 plt.savefig(table_filename, bbox_inches='tight', pad_inches=0.2)
                 plt.close(fig_table)
                 print(f"Saved {table_filename}")
@@ -299,8 +324,9 @@ def run_analysis():
                 summary_text += "No significant super-exponential signals were detected in this timeframe, suggesting price action is currently within visible bounds without extreme acceleration."
             
             
+            
             # --- Markdown Report ---
-            report_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{today_str}_report.md')
+            report_filename = os.path.join(reports_dir, f'{safe_ticker}_{today_str}_report.md')
             md_content = f"""# LPPLS Analyst Report: {ticker}
 **Date:** {today_str}
 
@@ -321,7 +347,9 @@ The **LPPLS (Log-Periodic Power Law Singularity)** model fits a super-exponentia
 - **Price (Blue)**: Actual market data.
 - **Divergence**: If the Price is currently far below the Fit Line, the bubble may have already popped or valid parameters were not found. If Price is hugging the Orange line tightly parabolic, the trend is robust.
 
-![Fit]({os.path.basename(fit_filename)})
+- **Divergence**: If the Price is currently far below the Fit Line, the bubble may have already popped or valid parameters were not found. If Price is hugging the Orange line tightly parabolic, the trend is robust.
+
+![Fit](../images/{os.path.basename(fit_filename)})
 
 ---
 
@@ -337,7 +365,9 @@ High values (close to 1.0) indicate a **consensus** across different timeframes 
 
 {conf_commentary}
 
-![Confidence]({os.path.basename(conf_filename)})
+{conf_commentary}
+
+![Confidence](../images/{os.path.basename(conf_filename)})
 
 ---
 
@@ -353,7 +383,9 @@ Observe the clusters. A solitary spike might be noise, but a **dense cluster** o
 
 {recent_commentary}
 
-![Cumulative]({os.path.basename(cum_filename)})
+{recent_commentary}
+
+![Cumulative](../images/{os.path.basename(cum_filename)})
 
 ---
 
@@ -364,7 +396,9 @@ A detailed log of the signal clusters shown above, sorted by **Recency**.
 - **Date Range**: The duration where the signal persisted.
 - **Max Confidence**: The peak intensity (0.0 to 1.0).
 
-![Table]({os.path.basename(table_filename) if table_filename else 'No Signals'})
+- **Max Confidence**: The peak intensity (0.0 to 1.0).
+
+![Table](../images/{os.path.basename(table_filename) if table_filename else 'No Signals'})
 
 ---
 
@@ -376,19 +410,36 @@ A detailed log of the signal clusters shown above, sorted by **Recency**.
             print(f"Saved {report_filename}")
             
             # --- PDF Report ---
-            pdf_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{today_str}_report.pdf')
+            pdf_filename = os.path.join(reports_dir, f'{safe_ticker}_{today_str}_report.pdf')
             with PdfPages(pdf_filename) as pdf:
                 # Page 1: Text
-                fig_text = plt.figure(figsize=(10, 8))
+                fig_text = plt.figure(figsize=(11.69, 8.27)) # A4 Landscape
                 ax_text = fig_text.add_subplot(111); ax_text.axis('off')
                 
-                txt_content = (
+                import textwrap
+                wrapper = textwrap.TextWrapper(width=90, replace_whitespace=False)
+                
+                def wrap_paragraph(text):
+                    lines = text.split('\n')
+                    wrapped_lines = []
+                    for line in lines:
+                        if line.strip():
+                            wrapped_lines.extend(wrapper.wrap(line))
+                        else:
+                            wrapped_lines.append("")
+                    return "\n".join(wrapped_lines)
+
+                clean_exec = summary_text.replace('### Executive Summary', 'EXECUTIVE SUMMARY').replace('**', '')
+
+                raw_text = (
                     f"LPPLS Analyst Report: {ticker}\nDate: {today_str}\n\n"
                     f"Projected Critical Time (tc): {tc_str}\n\n"
-                    f"{summary_text.replace('### Executive Summary', 'EXECUTIVE SUMMARY').replace('**', '')}" 
+                    f"{clean_exec}" 
                 )
                 
-                ax_text.text(0.05, 0.95, txt_content, transform=ax_text.transAxes, ha='left', va='top', fontsize=12, family='monospace')
+                final_text = wrap_paragraph(raw_text)
+                
+                ax_text.text(0.05, 0.95, final_text, transform=ax_text.transAxes, ha='left', va='top', fontsize=10, family='monospace')
                 pdf.savefig(fig_text); plt.close(fig_text)
                 
                 # Pages 2-5: Images
@@ -415,8 +466,8 @@ A detailed log of the signal clusters shown above, sorted by **Recency**.
             import traceback
             traceback.print_exc()
 
-    # Cleanup old runs
-    cleanup_old_files(OUTPUT_DIR, KEEP_HISTORY_DAYS)
+        # Cleanup old runs for this ticker
+        cleanup_ticker_dir(ticker_dir, KEEP_HISTORY_DAYS)
 
 if __name__ == '__main__':
     run_analysis()

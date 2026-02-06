@@ -36,4 +36,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Automated LPPLS Logic Update [skip ci]"
-          file_pattern: 'daily_plots/*.png'
+          file_pattern: 'daily_plots/'

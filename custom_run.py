@@ -17,8 +17,8 @@ import os
 # ==========================================
 # USER CONFIGURATION
 # ==========================================
-TICKERS = ["^NDX", "SPY"]   # List of tickers to analyze - ["^NDX", "SPY", "^GSPC", "QQQ", "BTC-USD"]
-START_DATE = "2020-01-01"
+TICKERS = ["META"]   # List of tickers to analyze - ["^NDX", "SPY", "^GSPC", "QQQ", "BTC-USD"]
+START_DATE = "2015-01-01"
 # Use current date as End Date
 END_DATE = datetime.now().strftime('%Y-%m-%d')
 OUTPUT_DIR = "manual_plots" # Sub-folder for results
@@ -29,7 +29,7 @@ OUTPUT_DIR = "manual_plots" # Sub-folder for results
 if __name__ == '__main__':
     print(f"Running analysis from {START_DATE} to {END_DATE}")
     
-    # Ensure output directory exists
+    # Ensure output directory exists (root folder)
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
         print(f"Created output directory: {OUTPUT_DIR}")
@@ -41,6 +41,19 @@ if __name__ == '__main__':
         print(f"\n{'='*40}")
         print(f"Processing: {TICKER}")
         print(f"{'='*40}")
+
+        # Clean filename (remove special chars like ^)
+        safe_ticker = TICKER.replace('^', '')
+
+        # Create subfolders for this ticker
+        ticker_dir = os.path.join(OUTPUT_DIR, safe_ticker)
+        images_dir = os.path.join(ticker_dir, "images")
+        reports_dir = os.path.join(ticker_dir, "reports")
+
+        if not os.path.exists(images_dir):
+            os.makedirs(images_dir)
+        if not os.path.exists(reports_dir):
+            os.makedirs(reports_dir)
 
         try:
             print(f"Fetching data for {TICKER} from {START_DATE} to {END_DATE}...")
@@ -76,8 +89,8 @@ if __name__ == '__main__':
 
             # Visualize Fit
             print(f"Plotting fit for {TICKER}...")
-            # Clean filename (remove special chars like ^)
-            safe_ticker = TICKER.replace('^', '')
+            # safe_ticker is already defined above
+
             
             # Check if fit succeeded (tc != 0)
             if tc != 0:
@@ -93,7 +106,7 @@ if __name__ == '__main__':
                 plt.xticks(rotation=45)
     
                 # Construct filename with subfolder and timestamp
-                fit_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{run_timestamp}_fit.png')
+                fit_filename = os.path.join(images_dir, f'{safe_ticker}_{run_timestamp}_fit.png')
                 
                 plt.savefig(fit_filename)
                 print(f"Saved plot to {fit_filename}")
@@ -134,12 +147,12 @@ if __name__ == '__main__':
                 for label in ax.get_xticklabels():
                     label.set_rotation(45)
 
-            conf_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{run_timestamp}_confidence.png')
+            conf_filename = os.path.join(images_dir, f'{safe_ticker}_{run_timestamp}_confidence.png')
             
             plt.savefig(conf_filename)
             print(f"Saved confidence plot to {conf_filename}")
 
-            csv_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{run_timestamp}_confidence.csv')
+            csv_filename = os.path.join(reports_dir, f'{safe_ticker}_{run_timestamp}_confidence.csv')
             lppls_model.save_confidence_csv(res, csv_filename)
 
             # ==========================================
@@ -223,7 +236,8 @@ if __name__ == '__main__':
             ax1.xaxis.set_minor_locator(mdates.WeekdayLocator(interval=1))
             
             # Save Chart
-            cum_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}-{run_timestamp}_cumulative.png')
+            # Save Chart
+            cum_filename = os.path.join(images_dir, f'{safe_ticker}-{run_timestamp}_cumulative.png')
             plt.savefig(cum_filename, bbox_inches='tight')
             print(f"Saved cumulative chart to {cum_filename}")
             plt.close(fig)
@@ -270,7 +284,8 @@ if __name__ == '__main__':
                         cell.set_facecolor('#f0f0f0')
                 
                 # Save Table
-                table_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}-{run_timestamp}_cumulative_table.png')
+                # Save Table
+                table_filename = os.path.join(images_dir, f'{safe_ticker}-{run_timestamp}_cumulative_table.png')
                 plt.savefig(table_filename, bbox_inches='tight', pad_inches=0.2)
                 print(f"Saved signal table to {table_filename}")
                 plt.close(fig_table)
@@ -291,7 +306,7 @@ if __name__ == '__main__':
             # 4. Generate Markdown Summary Report
             # ==========================================
             print(f"Generating summary report for {TICKER}...")
-            report_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{run_timestamp}_report.md')
+            report_filename = os.path.join(reports_dir, f'{safe_ticker}_{run_timestamp}_report.md')
             
             # Stats & Logic for Analyst Commentary
             num_top = sum(1 for row in table_data if row[2] == "Top")
@@ -379,7 +394,7 @@ The **LPPLS (Log-Periodic Power Law Singularity)** model fits a super-exponentia
 - **Price (Blue)**: Actual market data.
 - **Divergence**: If the Price is currently far below the Fit Line, the bubble may have already popped or valid parameters were not found. If Price is hugging the Orange line tightly parabolic, the trend is robust.
 
-![Fit Plot]({os.path.basename(fit_filename) if 'fit_filename' in locals() and os.path.exists(fit_filename) else 'Fit plot skipped'})
+![Fit Plot](../images/{os.path.basename(fit_filename) if 'fit_filename' in locals() and os.path.exists(fit_filename) else 'Fit plot skipped'})
 
 ---
 
@@ -395,7 +410,7 @@ High values (close to 1.0) indicate a **consensus** across different timeframes 
 
 {conf_commentary}
 
-![Confidence Plot]({os.path.basename(conf_filename)})
+![Confidence Plot](../images/{os.path.basename(conf_filename)})
 
 ---
 
@@ -411,7 +426,7 @@ Observe the clusters. A solitary spike might be noise, but a **dense cluster** o
 
 {recent_commentary}
 
-![Cumulative Chart]({os.path.basename(cum_filename)})
+![Cumulative Chart](../images/{os.path.basename(cum_filename)})
 
 ---
 
@@ -422,7 +437,7 @@ A detailed log of the signal clusters shown above, sorted by **Recency**.
 - **Date Range**: The duration where the signal persisted.
 - **Max Confidence**: The peak intensity (0.0 to 1.0).
 
-![Signal Table]({os.path.basename(table_filename) if table_filename else 'No signals detected'})
+![Signal Table](../images/{os.path.basename(table_filename) if table_filename else 'No signals detected'})
 
 ---
 
@@ -438,35 +453,56 @@ A detailed log of the signal clusters shown above, sorted by **Recency**.
             # 5. Generate PDF Report
             # ==========================================
             print(f"Generating PDF report for {TICKER}...")
-            pdf_filename = os.path.join(OUTPUT_DIR, f'{safe_ticker}_{run_timestamp}_report.pdf')
+            pdf_filename = os.path.join(reports_dir, f'{safe_ticker}_{run_timestamp}_report.pdf')
             
             with PdfPages(pdf_filename) as pdf:
                 # Page 1: Summary Text
-                fig_text = plt.figure(figsize=(10, 8))
+                # Use a Letter/A4 friendly size or consistent with plots
+                # Plots are often landscape, so let's stick to a landscape ratio similar to plots but ensuring text fits.
+                fig_text = plt.figure(figsize=(11.69, 8.27)) # A4 Landscape roughly
                 ax_text = fig_text.add_subplot(111)
                 ax_text.axis('off')
                 
-                txt_content = (
-                    f"LPPLS Analyst Report: {TICKER}\n"
-                    f"Run Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-                    f"Data Range: {START_DATE} to {END_DATE}\n\n"
-                    f"1. MODEL FIT & CRITICAL TIME (tc): {tc_str}\n"
-                    f"{tc_commentary.replace('**', '')}\n\n"
-                    f"2. CONFIDENCE INDICATORS\n"
-                    f"{conf_commentary.replace('**', '')}\n\n"
-                    f"3. CUMULATIVE PRICE & SIGNAL ANALYSIS\n"
-                    f"{recent_commentary.replace('**', '')}\n\n"
-                    f"{summary_text.replace('### Executive Summary', '4. EXECUTIVE SUMMARY').replace('**', '')}"
-                )
-                
-                # Simple text wrapping for the summary
                 import textwrap
-                wrapper = textwrap.TextWrapper(width=80) 
-                # We won't wrap specific hardcoded lines, just the summary_text part if needed, 
-                # but let's just dump it in for now. Matplotlib text doesn't auto-wrap nicely without keys.
-                # Let's align top-left.
+                wrapper = textwrap.TextWrapper(width=90, replace_whitespace=False) 
                 
-                ax_text.text(0.05, 0.95, txt_content, transform=ax_text.transAxes, ha='left', va='top', fontsize=12, family='monospace')
+                # Construct sections with wrapping
+                def wrap_paragraph(text, prefix=""):
+                    # Split into lines first to preserve existing newlines
+                    lines = text.split('\n')
+                    wrapped_lines = []
+                    for line in lines:
+                        if line.strip():
+                            # Wrap each existing line
+                            w_lines = wrapper.wrap(line)
+                            wrapped_lines.extend(w_lines)
+                        else:
+                            wrapped_lines.append("")
+                    return "\n".join([prefix + l for l in wrapped_lines])
+
+                # Clean up markdown stars for PDF
+                clean_tc = tc_commentary.replace('**', '')
+                clean_conf = conf_commentary.replace('**', '')
+                clean_recent = recent_commentary.replace('**', '')
+                clean_exec = summary_text.replace('### Executive Summary', '4. EXECUTIVE SUMMARY').replace('**', '')
+
+                title_section = f"LPPLS Analyst Report: {TICKER}\nRun Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\nData Range: {START_DATE} to {END_DATE}\n\n"
+                
+                sec1 = f"1. MODEL FIT & CRITICAL TIME (tc): {tc_str}\n{clean_tc}\n\n"
+                sec2 = f"2. CONFIDENCE INDICATORS\n{clean_conf}\n\n"
+                sec3 = f"3. CUMULATIVE PRICE & SIGNAL ANALYSIS\n{clean_recent}\n\n"
+                sec4 = f"{clean_exec}"
+                
+                # Wrap long sections
+                final_text = (
+                    title_section + 
+                    wrap_paragraph(sec1) + 
+                    wrap_paragraph(sec2) + 
+                    wrap_paragraph(sec3) + 
+                    wrap_paragraph(sec4)
+                )
+
+                ax_text.text(0.05, 0.95, final_text, transform=ax_text.transAxes, ha='left', va='top', fontsize=10, family='monospace')
                 pdf.savefig(fig_text)
                 plt.close(fig_text)
                 
