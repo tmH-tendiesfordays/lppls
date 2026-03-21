@@ -1,5 +1,5 @@
-# LPPLS Analyst Report: SPY
-**Date:** 2026-03-18
+# LPPLS Analyst Report: QQQ
+**Date:** 2026-03-21
 
 ---
 
@@ -9,16 +9,16 @@
 The **LPPLS (Log-Periodic Power Law Singularity)** model fits a super-exponential growth function to the price history to identify unsustainable trajectories. The **Critical Time ($t_c$)** represents the mathematical limit where the bubble component becomes finite—often coinciding with a change in regime (crash or major correction).
 
 ### Analysis
-**Projected Critical Time:** 2027-02-12
+**Projected Critical Time:** 2027-03-03
 
-**Observation:** We are currently **330 days** away from the projected critical point. Historical patterns suggest that price oscillations typically accelerate as we close this gap.
+**Observation:** We are currently **346 days** away from the projected critical point. Historical patterns suggest that price oscillations typically accelerate as we close this gap.
 
 **Visual Interpretation:**
 - **Fit Line (Orange)**: Represents the theoretical super-exponential path.
 - **Price (Blue)**: Actual market data.
 - **Divergence**: If the Price is currently far below the Fit Line, the bubble may have already popped or valid parameters were not found. If Price is hugging the Orange line tightly parabolic, the trend is robust.
 
-![Fit](../images/SPY_2026-03-18_fit.png)
+![Fit](../images/QQQ_2026-03-21_fit.png)
 
 ---
 
@@ -32,9 +32,9 @@ Calculating $t_c$ on a single window can be noisy. This section performs **neste
 ### Analysis
 High values (close to 1.0) indicate a **consensus** across different timeframes that a specific date was a critical point. Frequent clustering of these spikes suggests a high probability of a turning point.
 
-**Observation:** We see 11 signal clusters with confidence > 30%. This 'agreement' across time scales reinforces the validity of the trend identification.
+**Observation:** We see 12 signal clusters with confidence > 30%. This 'agreement' across time scales reinforces the validity of the trend identification.
 
-![Confidence](../images/SPY_2026-03-18_confidence.png)
+![Confidence](../images/QQQ_2026-03-21_confidence.png)
 
 ---
 
@@ -50,7 +50,7 @@ Observe the clusters. A solitary spike might be noise, but a **dense cluster** o
 
 **Observation:** The last 3 detected signal clusters were all 'Top' signals. The market is persistently testing upper limits.
 
-![Cumulative](../images/SPY_2026-03-18_cumulative.png)
+![Cumulative](../images/QQQ_2026-03-21_cumulative.png)
 
 ---
 
@@ -61,17 +61,17 @@ A detailed log of the signal clusters shown above, sorted by **Recency**.
 - **Date Range**: The duration where the signal persisted.
 - **Max Confidence**: The peak intensity (0.0 to 1.0).
 
-![Table](../images/SPY_2026-03-18_cumulative_table.png)
+![Table](../images/QQQ_2026-03-21_cumulative_table.png)
 
 ---
 
 ## 5. Analyst Conclusion
 ### Executive Summary
-The analysis for **SPY** (2019-01-01 to 2026-03-18) has detected a total of **74** significant LPPLS signals.
+The analysis for **QQQ** (2019-01-01 to 2026-03-21) has detected a total of **64** significant LPPLS signals.
 
 **Signal Breakdown:**
-- **73** Top Signals (Red): Indication of bubble-like behavior and potential local maxima.
-- **1** Bottom Signals (Green): Indication of negative bubbles and potential buying opportunities.
+- **56** Top Signals (Red): Indication of bubble-like behavior and potential local maxima.
+- **8** Bottom Signals (Green): Indication of negative bubbles and potential buying opportunities.
 
 **Recent Activity:**
-The most recent alert was a **Top** signal observed during **2026-01-27 to 2026-01-28**, peaking at a confidence level of **0.0588**. Traders should watch for price reaction around these levels.
+The most recent alert was a **Top** signal observed during **2025-11-10 to 2025-11-14**, peaking at a confidence level of **0.3636**. Traders should watch for price reaction around these levels.
