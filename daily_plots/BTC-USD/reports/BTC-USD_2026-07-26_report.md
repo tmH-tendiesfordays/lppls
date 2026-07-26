@@ -1,5 +1,5 @@
-# LPPLS Analyst Report: QQQ
-**Date:** 2026-07-23
+# LPPLS Analyst Report: BTC-USD
+**Date:** 2026-07-26
 
 ---
 
@@ -9,16 +9,16 @@
 The **LPPLS (Log-Periodic Power Law Singularity)** model fits a super-exponential growth function to the price history to identify unsustainable trajectories. The **Critical Time ($t_c$)** represents the mathematical limit where the bubble component becomes finite—often coinciding with a change in regime (crash or major correction).
 
 ### Analysis
-**Projected Critical Time:** 2027-01-18
+**Projected Critical Time:** 2025-09-04
 
-**Observation:** We are currently **178 days** away from the projected critical point. Historical patterns suggest that price oscillations typically accelerate as we close this gap.
+**Observation:** The projected Critical Time (2025-09-04) has passed. Since the crash/correction didn't strictly coincide with this date, the market may have entered a new regime or diffused the bubble pressure sideways.
 
 **Visual Interpretation:**
 - **Fit Line (Orange)**: Represents the theoretical super-exponential path.
 - **Price (Blue)**: Actual market data.
 - **Divergence**: If the Price is currently far below the Fit Line, the bubble may have already popped or valid parameters were not found. If Price is hugging the Orange line tightly parabolic, the trend is robust.
 
-![Fit](../images/QQQ_2026-07-23_fit.png)
+![Fit](../images/BTC-USD_2026-07-26_fit.png)
 
 ---
 
@@ -32,9 +32,9 @@ Calculating $t_c$ on a single window can be noisy. This section performs **neste
 ### Analysis
 High values (close to 1.0) indicate a **consensus** across different timeframes that a specific date was a critical point. Frequent clustering of these spikes suggests a high probability of a turning point.
 
-**Observation:** We see 13 signal clusters with confidence > 30%. This 'agreement' across time scales reinforces the validity of the trend identification.
+**Observation:** We see 16 signal clusters with confidence > 30%. This 'agreement' across time scales reinforces the validity of the trend identification.
 
-![Confidence](../images/QQQ_2026-07-23_confidence.png)
+![Confidence](../images/BTC-USD_2026-07-26_confidence.png)
 
 ---
 
@@ -50,7 +50,7 @@ Observe the clusters. A solitary spike might be noise, but a **dense cluster** o
 
 **Observation:** The last 3 detected signal clusters were all 'Top' signals. The market is persistently testing upper limits.
 
-![Cumulative](../images/QQQ_2026-07-23_cumulative.png)
+![Cumulative](../images/BTC-USD_2026-07-26_cumulative.png)
 
 ---
 
@@ -61,17 +61,17 @@ A detailed log of the signal clusters shown above, sorted by **Recency**.
 - **Date Range**: The duration where the signal persisted.
 - **Max Confidence**: The peak intensity (0.0 to 1.0).
 
-![Table](../images/QQQ_2026-07-23_cumulative_table.png)
+![Table](../images/BTC-USD_2026-07-26_cumulative_table.png)
 
 ---
 
 ## 5. Analyst Conclusion
 ### Executive Summary
-The analysis for **QQQ** (2019-01-01 to 2026-07-23) has detected a total of **65** significant LPPLS signals.
+The analysis for **BTC-USD** (2019-01-01 to 2026-07-26) has detected a total of **51** significant LPPLS signals.
 
 **Signal Breakdown:**
-- **56** Top Signals (Red): Indication of bubble-like behavior and potential local maxima.
+- **42** Top Signals (Red): Indication of bubble-like behavior and potential local maxima.
 - **9** Bottom Signals (Green): Indication of negative bubbles and potential buying opportunities.
 
 **Recent Activity:**
-The most recent alert was a **Top** signal observed during **2026-05-08**, peaking at a confidence level of **0.1667**. Traders should watch for price reaction around these levels.
+The most recent alert was a **Top** signal observed during **2026-05-15**, peaking at a confidence level of **0.2000**. Traders should watch for price reaction around these levels.
