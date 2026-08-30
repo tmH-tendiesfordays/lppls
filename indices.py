@@ -21,7 +21,7 @@ except ImportError:
 # ==========================================
 # CONFIGURATION
 # ==========================================
-TICKERS = ["^NDX", "SPY", "^GSPC", "QQQ", "BTC-USD"]
+TICKERS = ["^NDX", "SPY", "^GSPC", "QQQ", "BTC-USD", "SMH", "SOXX"]
 START_DATE = "2019-01-01"
 OUTPUT_DIR = "daily_plots"
 KEEP_HISTORY_DAYS = 3

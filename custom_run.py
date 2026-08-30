@@ -17,8 +17,8 @@ import os
 # ==========================================
 # USER CONFIGURATION
 # ==========================================
-TICKERS = ["META"]   # List of tickers to analyze - ["^NDX", "SPY", "^GSPC", "QQQ", "BTC-USD"]
-START_DATE = "2015-01-01"
+TICKERS = ["SMH","SOXX"]   # List of tickers to analyze - ["^NDX", "SPY", "^GSPC", "QQQ", "BTC-USD"]
+START_DATE = "2008-01-01"
 # Use current date as End Date
 END_DATE = datetime.now().strftime('%Y-%m-%d')
 OUTPUT_DIR = "manual_plots" # Sub-folder for results
